@@ -8,7 +8,7 @@ public class ProviderApi
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _serializerOptions;
 
-    public ProviderApi(HttpClient httpClient, JsonSerializerOptions serializerOptions)
+    public ProviderApi(HttpClient httpClient)
     {
         _httpClient = httpClient;
         _serializerOptions = new JsonSerializerOptions()
@@ -22,9 +22,9 @@ public class ProviderApi
 
     public async Task<Job> GetJob(string providerId, string jobId)
     {
-        var httpResponseMessage = await _httpClient.GetAsync($"v2/providers{providerId}/jobs/{jobId}");
+        var httpResponseMessage = await _httpClient.GetAsync($"v2/providers/{providerId}/jobs/{jobId}");
         var responseContentAsString = await httpResponseMessage.Content.ReadAsStringAsync();
-        var job = JsonSerializer.Deserialize<Job>(responseContentAsString);
+        var job = JsonSerializer.Deserialize<Job>(responseContentAsString, _serializerOptions);
         return job;
     }
 }

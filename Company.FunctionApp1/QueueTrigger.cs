@@ -20,7 +20,11 @@ public class QueueTrigger
     [Function("QueueTrigger")]
     public async Task RunAsync([QueueTrigger("%QueueName%", Connection = "")] string myQueueItem)
     {
-        var message = JsonSerializer.Deserialize<Message>(myQueueItem);
+        var message = JsonSerializer.Deserialize<Message>(myQueueItem, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        });
         
         _logger.LogInformation($"C# Queue trigger function processed: {myQueueItem}");
         var job = await _providerApi.GetJob(message.ProviderId, message.JobId);
